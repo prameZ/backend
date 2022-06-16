@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', function (request, response) {
-    response.sendFile(path.join(__dirname + '/App.vue'));
+    response.sendFile(path.join(__dirname + '/views/login.vue'));
 });
 
 // const object2 = {
@@ -94,7 +94,7 @@ app.post('/auth2', (request, response) => {
                 response.send({
                     success: true,
                     message: "correct",
-                    data : results[0]
+                    data: results[0]
                 });
             } else {
                 response.send({
@@ -109,7 +109,7 @@ app.post('/auth2', (request, response) => {
     }
 });
 
-app.post('/auth', function (request, response) {
+app.post('/auth', (request, response) => {
     var username = request.body.username;
     var password = request.body.password;
     if (username && password) {
@@ -129,13 +129,26 @@ app.post('/auth', function (request, response) {
     }
 });
 
-app.get('/home', function (request, response) {
+app.get('/home', (request, response) => {
     if (request.session.loggedin) {
         response.send({ 'message': 'Welcome back, ' + request.session.username + '!' });
     } else {
         response.send({ 'message': 'Please login to view this page!' });
     }
 });
+
+app.get("/pulldata", function(request, response, next){
+
+    
+    //Select all customers and return the result object:
+    connection.query("SELECT * FROM accounts", function (err, result, fields) {
+      if (err) throw err;
+      console.log(result);
+      response.json(result[0])
+    });
+
+});
+
 
 app.listen(9000, () => {
     console.log('Application is running on port 9000');
